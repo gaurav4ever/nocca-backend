@@ -1,6 +1,12 @@
 package com.pp.nocca.controller;
 
-import com.pp.nocca.Model.UserAndPan;
+import com.pp.nocca.Model.request.PanListingRequest;
+import com.pp.nocca.Model.request.UpdateDeviceStatusRequest;
+import com.pp.nocca.Model.request.DeviceListingRequest;
+import com.pp.nocca.Model.response.DeviceDetails;
+import com.pp.nocca.Model.response.DeviceDetailsResponse;
+import com.pp.nocca.Model.response.PanDetailResponse;
+import com.pp.nocca.Model.response.PanDetails;
 import com.pp.nocca.document.TokenDetails;
 import com.pp.nocca.document.UserDetails;
 import com.pp.nocca.minidocuments.MiniTokenDetails;
@@ -15,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,46 +43,75 @@ public class AppController {
   @Autowired
   UserDetailsRepo userDetailsRepo;
 
-  @GetMapping(value = "/getPanList", headers = "Accept=application/json")
-  public List<String> getPanList(@RequestBody String userId) {
+  @PostMapping(value = "/getPanList", headers = "Accept=application/json")
+  public ResponseEntity<PanDetailResponse> getPanList(@RequestBody PanListingRequest panListingRequest) {
 
-    UserDetails userDetails = userDetailsRepo.findByUserId(userId);
+    UserDetails userDetails = userDetailsRepo.findByUserId(panListingRequest.email);
     List<MiniUserPANDetails> miniUserPANDetailsList = userDetails.getMiniUserPANDetailsList();
 
-    List<String> panList = new ArrayList<>();
+    PanDetailResponse panDetailResponse = new PanDetailResponse();
+    List<PanDetails> panDetailList = new ArrayList<>();
     for (MiniUserPANDetails miniUserPANDetails : miniUserPANDetailsList) {
-      panList.add(miniUserPANDetails.getPanNumber());
+      PanDetails panDetails = new PanDetails();
+      panDetails.panId = miniUserPANDetails.getPanId();
+      panDetails.panNumber = miniUserPANDetails.getPanNumber();
+      panDetailList.add(panDetails);
     }
-
-    return panList;
+    panDetailResponse.panDetails = panDetailList;
+    return new ResponseEntity<>(panDetailResponse, HttpStatus.OK);
   }
 
-  @GetMapping(value = "/getDevicesList", headers = "Accept=application/json")
-  public Map<String,List<MiniVendorDetails>> getPanList(@RequestBody UserAndPan userAndPan) {
+  @PostMapping(value = "/getDevicesList", headers = "Accept=application/json")
+  public ResponseEntity<DeviceDetailsResponse> getPanList(@RequestBody DeviceListingRequest deviceListingRequest) {
 
-    UserDetails userDetails = userDetailsRepo.findByUserId(userAndPan.getUserId());
+
+    UserDetails userDetails = userDetailsRepo.findByUserId(deviceListingRequest.getUserId());
     List<MiniUserPANDetails> miniUserPANDetailsList = userDetails.getMiniUserPANDetailsList();
 
     List<MiniTokenDetails> miniTokenDetailsList = new ArrayList<>();
     for (MiniUserPANDetails miniUserPANDetails : miniUserPANDetailsList) {
-      if (miniUserPANDetails.getPanNumber().equalsIgnoreCase(userAndPan.getPanNo())) {
+      if (miniUserPANDetails.getPanNumber().equalsIgnoreCase(deviceListingRequest.getPanNo())) {
         miniTokenDetailsList.addAll(miniUserPANDetails.getMiniTokenDetailsList());
       }
     }
 
-    Map<String,List<MiniVendorDetails>> miniVendorDetailsMap = new HashMap<>();
+    Map<String, List<MiniVendorDetails>> miniVendorDetailsMap = new HashMap<>();
+
+    DeviceDetailsResponse deviceDetailsResponse = new DeviceDetailsResponse();
+    List<DeviceDetails> deviceDetailsList = new ArrayList<>();
 
     for (MiniTokenDetails miniTokenDetails : miniTokenDetailsList) {
       TokenDetails tokenDetails = tokenDetailsRepo.findByTokenId(miniTokenDetails.getTokenId());
 
       List<MiniVendorDetails> vendorDetailsList = tokenDetails.getMiniVendorDetailsList();
 
-      miniVendorDetailsMap.put(tokenDetails.getTokenId(),vendorDetailsList);
-    }
 
-    return miniVendorDetailsMap;
+      for (MiniVendorDetails miniVendorDetails : vendorDetailsList) {
+        DeviceDetails deviceDetails = new DeviceDetails();
+        deviceDetails.deviceId = miniVendorDetails.getAccountIdDeviceId();
+        deviceDetails.deviceName = miniVendorDetails.getDeviceName();
+        deviceDetails.status = miniVendorDetails.getStatus();
+        deviceDetails.tokenId = tokenDetails.getTokenId();
+        deviceDetailsList.add(deviceDetails);
+      }
+
+    }
+    deviceDetailsResponse.deviceDetailsList = deviceDetailsList;
+    return new ResponseEntity<>(deviceDetailsResponse, HttpStatus.OK);
   }
 
 
+  @PostMapping(value = "/updateDevice", headers = "Accept=application/json")
+  public ResponseEntity<String> updateDevice(@RequestBody UpdateDeviceStatusRequest updateDeviceStatusRequest) {
+    TokenDetails tokenDetails = tokenDetailsRepo.findByTokenId(updateDeviceStatusRequest.tokenId);
+    List<MiniVendorDetails> vendorDetailsList = tokenDetails.getMiniVendorDetailsList();
+    for (MiniVendorDetails miniVendorDetail : vendorDetailsList) {
+      if (miniVendorDetail.getAccountIdDeviceId().equalsIgnoreCase(updateDeviceStatusRequest.deviceId)) {
+        miniVendorDetail.setStatus(0);
+        tokenDetailsRepo.save(tokenDetails);
+      }
+    }
+    return new ResponseEntity<>("success", HttpStatus.OK);
+  }
 
 }

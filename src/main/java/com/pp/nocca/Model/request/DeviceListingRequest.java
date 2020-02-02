@@ -1,13 +1,13 @@
-package com.pp.nocca.Model;
+package com.pp.nocca.Model.request;
 
 /**
  * Written by Gaurav Sharma on 2020-02-02.
  **/
-public class UserAndPan {
+public class DeviceListingRequest {
   public String userId;
   public String panNo;
 
-  public UserAndPan() {
+  public DeviceListingRequest() {
   }
 
   public String getUserId() {

@@ -11,18 +11,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class NoccaApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
-		SpringApplication.run(NoccaApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(NoccaApplication.class, args);
+  }
 
-	@Autowired
-	UserDetailsRepo userDetailsRepo;
+  @Autowired
+  UserDetailsRepo userDetailsRepo;
 
-	@Autowired
-	TokenDetailsRepo tokenDetailsRepo;
+  @Autowired
+  TokenDetailsRepo tokenDetailsRepo;
 
-	@Override
-	public void run(String[] args){
+  @Override
+  public void run(String[] args) {
 	/*	System.out.println("Printing all of the User Details");
 		System.out.println(userDetailsRepo.findAll().toString());
 
@@ -31,6 +31,6 @@ public class NoccaApplication implements CommandLineRunner {
 
 		System.out.println(userDetailsRepo.findByUserId("shikhar@gmail.com"));
 */
-	}
+  }
 
 }
