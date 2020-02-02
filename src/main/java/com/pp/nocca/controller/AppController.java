@@ -101,7 +101,7 @@ public class AppController {
   }
 
 
-  @PostMapping(value = "/updateDevice", headers = "Accept=application/json")
+  @PostMapping(value = "/updateDeviceStatus", headers = "Accept=application/json")
   public ResponseEntity<String> updateDevice(@RequestBody UpdateDeviceStatusRequest updateDeviceStatusRequest) {
     TokenDetails tokenDetails = tokenDetailsRepo.findByTokenId(updateDeviceStatusRequest.tokenId);
     List<MiniVendorDetails> vendorDetailsList = tokenDetails.getMiniVendorDetailsList();

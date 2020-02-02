@@ -11,5 +11,4 @@ public interface UserDetailsRepo extends MongoRepository<UserDetails, String> {
 
   public UserDetails findByUserId(String userId);
 
-  UserDetails findByEmail(String email);
 }
