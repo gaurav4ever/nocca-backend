@@ -8,11 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.stereotype.Repository;
 
 /**
  * Written by Gaurav Sharma on 2020-02-02.
  **/
-
+@Repository
 @Document("USERDetails")
 public class UserDetails {
 

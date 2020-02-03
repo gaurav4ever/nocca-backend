@@ -159,7 +159,7 @@ public class AppController {
     for (MiniVendorDetails miniVendorDetail : vendorDetailsList) {
       if (miniVendorDetail.getAccountIdDeviceId().equalsIgnoreCase(updateDeviceStatusRequest.deviceId)) {
         miniVendorDetail.setStatus(updateDeviceStatusRequest.status);
-        tokenDetailsRepo.save(tokenDetails);
+        tokenDetailsRepo.insert(tokenDetails);
         break;
       }
     }
