@@ -1,9 +1,9 @@
 package com.pp.nocca.controller;
 
+import com.pp.nocca.Model.request.DeviceListingRequest;
 import com.pp.nocca.Model.request.PanListingRequest;
 import com.pp.nocca.Model.request.PaymentPortalRequest;
 import com.pp.nocca.Model.request.UpdateDeviceStatusRequest;
-import com.pp.nocca.Model.request.DeviceListingRequest;
 import com.pp.nocca.Model.response.DeviceDetails;
 import com.pp.nocca.Model.response.DeviceDetailsResponse;
 import com.pp.nocca.Model.response.PanDetailResponse;
@@ -15,19 +15,10 @@ import com.pp.nocca.minidocuments.MiniUserPANDetails;
 import com.pp.nocca.minidocuments.MiniVendorDetails;
 import com.pp.nocca.repository.TokenDetailsRepo;
 import com.pp.nocca.repository.UserDetailsRepo;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +26,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sun.tools.jstat.Token;
 
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-import static org.springframework.data.mongodb.core.query.Update.update;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Written by Gaurav Sharma on 2020-02-02.
